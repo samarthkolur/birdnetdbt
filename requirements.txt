@@ -1,0 +1,11 @@
+dbt-core>=1.5.0
+dbt-postgres>=1.5.0
+psycopg2-binary
+pandas
+scikit-learn
+torch
+numpy
+librosa
+soundfile
+matplotlib
+networkx

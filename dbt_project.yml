@@ -1,0 +1,19 @@
+name: birdnet_dbt
+version: '1.0'
+config-version: 2
+
+profile: birdnet_profile
+
+model-paths: [models]
+seed-paths: [data]
+snapshot-paths: [snapshots]
+analysis-paths: [analysis]
+
+models:
+  birdnet_dbt:
+    staging:
+      +materialized: view
+    cleaning:
+      +materialized: view
+    marts:
+      +materialized: view

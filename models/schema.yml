@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw ingestion schema containing extracted BirdNET features and metadata"
+    tables:
+      - name: bird_features
+        description: "Raw feature exports from BirdNET embedding extraction. Stored as JSONB for embedding vectors."
+
+models:
+  - name: stg_bird_features
+    description: "Stage raw bird features and normalise column names"
+    columns:
+      - name: recording_id
+        description: "Unique identifier for the audio segment"
+        tests: [not_null]
+      - name: species
+        description: "Predicted species label from upstream BirdNET extractor"
+        tests: [not_null]
+      - name: embeddings_json
+        description: "JSONB object containing 'dims' array of embedding floats"
+  - name: clean_bird_features
+    description: "Quality-filtered bird features (confidence/duration/amplitude constraints)"
+    columns:
+      - name: recording_id
+        description: "Primary key for feature record"
+        tests: [not_null, unique]
+      - name: confidence_score
+        description: "BirdNET confidence score (0.0 - 1.0)"
+        tests:
+          - not_null
+          - value_between:
+              arguments:
+                min_value: 0.0
+                max_value: 1.0
+      - name: duration_ms
+        description: "Segment duration in milliseconds"
+        tests:
+          - not_null
+          - value_between:
+              arguments:
+                min_value: 100
+                max_value: 10000
+      - name: embedding
+        description: "JSONB embedding object with 'dims' array"
+        tests:
+          - jsonb_dims_length:
+              arguments:
+                expected_length: 1024
+  - name: bird_distribution
+    description: "Species counts and proportions"
+  - name: bird_stats
+    description: "Per-species statistical summaries"
+

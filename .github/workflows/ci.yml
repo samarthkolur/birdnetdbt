@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dbt-ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: birdnet
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install dbt-postgres
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do pg_isready -h localhost -p 5432 && break || sleep 2; done
+      - name: Initialize DB and load seed
+        run: ./scripts/load_seed.sh postgresql://postgres:postgres@localhost:5432/birdnet
+      - name: Run dbt
+        run: dbt deps && dbt run --profiles-dir . --project-dir . && dbt docs generate --profiles-dir . --project-dir .
+      - name: Run dbt tests
+        run: dbt test --profiles-dir . --project-dir . && dbt docs generate --profiles-dir . --project-dir .
+      - name: Run ML demo (MLP)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/birdnet
+        run: python3 ml/train_mlp.py

@@ -1,0 +1,7 @@
+recording_id,species,confidence,duration_ms,amplitude_db,pitch_hz,sample_rate,embeddings_json
+r1,Indian Robin,0.92,3000,-20.5,3500,44100,"{""dims"": [0.01,0.02,0.03]}"
+r2,Common Myna,0.76,3000,-18.0,2200,44100,"{""dims"": [0.04,0.05,0.06]}"
+r3,House Sparrow,0.12,3000,-50.0,4200,44100,"{""dims"": [0.02,0.01,0.03]}"
+r4,Indian Robin,0.88,2800,-22.0,3600,44100,"{""dims"": [0.03,0.02,0.01]}"
+r5,Nilgiri Flycatcher,0.55,3100,-16.0,6100,44100,"{""dims"": [0.06,0.07,0.08]}"
+r6,Common Myna,0.40,2500,-30.0,2100,44100,"{""dims"": [0.05,0.04,0.02]}"

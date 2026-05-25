@@ -1,0 +1,13 @@
+# Example `profiles.yml` for local development using docker-compose Postgres
+birdnet_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5432
+      dbname: birdnet
+      schema: public
+      threads: 1

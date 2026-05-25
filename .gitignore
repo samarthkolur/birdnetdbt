@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+dbt_modules/
+target/
+logs/
+extract.log
+data/ibc53_features.csv
+docs/assets/dbt_lineage.png
+iBC53/
